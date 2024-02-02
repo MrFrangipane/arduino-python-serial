@@ -8,7 +8,7 @@ SerialCommunicator serialCommunicator;
 
 void sendAllTypes(void *somePointer, std::vector<byte> &data) {
     // Get data from somePointer
-    auto someClass = static_cast<SomeClass>(somePointer);
+    auto someClass = static_cast<SomeClass*>(somePointer);
     SerialProtocol::AllTypes allTypes = someClass->getAllTypes();
 
     // Send through serial
@@ -23,7 +23,7 @@ void receiveAllTypes(void *somePointer, std::vector<byte> &data) {
     memcpy(&allTypes, data.data(), data.size());
 
     // Update somePointer
-    auto someClass = static_cast<SomeClass>(somePointer);
+    auto someClass = static_cast<SomeClass*>(somePointer);
     someClass->updateAllTypes(allTypes);
 }
 

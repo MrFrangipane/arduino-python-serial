@@ -1,4 +1,4 @@
-# Python Arduino Serial
+# Arduino Python Serial
 
 Bidirectionnal serial communication (C Structs and Python Dataclasses) between Python and Arduino
 

@@ -1,31 +1,46 @@
-// Minimal example for Raspberry Pi Pico and NHD-0216AW-IB3 Display
-#include <WireOled.h>
+// Minimal example using a basic Header generated from Python library
+#include <SerialCommunicator.h>
+
+using namespace Frangitron;
+
+SerialCommunicator serialCommunicator;
 
 
-WireOled display;
+void sendAllTypes(void *somePointer, std::vector<byte> &data) {
+    // Get data from somePointer
+    auto someClass = static_cast<SomeClass>(somePointer);
+    SerialProtocol::AllTypes allTypes = someClass->getAllTypes();
+
+    // Send through serial
+    data.resize(sizeof(SerialProtocol::BoardSettings));
+    memcpy(data.data(), &allTypes, sizeof(SerialProtocol::BoardSettings));
+}
+
+
+void receiveAllTypes(void *somePointer, std::vector<byte> &data) {
+    // Cast from received serial data
+    SerialProtocol::AllTypes allTypes;
+    memcpy(&allTypes, data.data(), data.size());
+
+    // Update somePointer
+    auto someClass = static_cast<SomeClass>(somePointer);
+    someClass->updateAllTypes(allTypes);
+}
 
 
 void setup() {
-    if (display.detect()) {
-        display.init();
-        display.write("Frangitron");
-        display.write(1, 0, "Hello");
-    }
+    serialCommunicator.init(somePointer);  // somePointer will be passed to callbacks
+    serialCommunicator.registerSendCallback(
+            SerialProtocol::DataTypeCode::AllTypes,
+            sendAllTypes
+    );
+    serialCommunicator.registerReceiveCallback(
+            SerialProtocol::DataTypeCode::AllTypes,
+            receiveAllTypes
+    );
 }
 
 
 void loop() {
-      display.setActive(true);
-
-      display.setCursorBlinking(false);
-      delay(500);
-      display.setCursorBlinking(true);
-      delay(500);
-      display.setContrast(0);
-      delay(500);
-      display.setContrast(255);
-      delay(500);
-
-      display.setActive(false);
-      delay(500);
+  serialCommunicator.poll();
 }

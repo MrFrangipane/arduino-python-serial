@@ -1,5 +1,7 @@
 # Arduino Python Serial
 
+**/!\ BETA VERSION**
+
 Bidirectionnal serial communication (C Structs and Python Dataclasses) between Python and Arduino
 
 - declare type hinted Dataclasses in Python
